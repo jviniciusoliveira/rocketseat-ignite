@@ -8,16 +8,16 @@ import { FormHandles } from '@unform/core';
 
 type ModalAddFoodProps = {
   isOpen: boolean;
-  setIsOpen: () => void;
-  handleAddFood: () => void;
+  setIsOpen: (isOpen: boolean) => void;
+  handleAddFood: (data: any) => void;
 }
 
 export function ModalAddFood({ isOpen, setIsOpen, handleAddFood }: ModalAddFoodProps) {
   const formRef = useRef<FormHandles>(null);
 
   const handleSubmit = async (data: any) => {
-    handleAddFood();
-    setIsOpen();
+    handleAddFood(data);
+    setIsOpen(!isOpen);
   };
 
   return (
