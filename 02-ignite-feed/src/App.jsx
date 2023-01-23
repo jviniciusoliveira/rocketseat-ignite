@@ -1,3 +1,5 @@
+import { Header } from './components/Header'
+
 export function App() {
-  return <h1>ignite feed</h1>
+  return <Header />
 }
