@@ -1,33 +1,56 @@
+import * as DateFns from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR'
 import { Avatar } from '../Avatar'
 import { Comment } from '../Comment'
 import styles from './post.module.css'
 
-export function Post() {
+const contentTypes = {
+  paragraph: (text, key) => <p key={key}>{text}</p>,
+  link: (text, key) => (
+    <p key={key}>
+      <a href="">{text}</a>
+    </p>
+  ),
+}
+
+export function Post({ author, content, publishedAt }) {
+  const publishedDateFormatted = DateFns.format(
+    publishedAt,
+    "d 'de' LLLL 'às' HH:mm'h'",
+    {
+      locale: ptBR,
+    }
+  )
+
+  const publishedDateRelativeToNow = DateFns.formatDistanceToNow(publishedAt, {
+    locale: ptBR,
+    addSuffix: true,
+  })
+
   return (
     <article className={styles.postContainer}>
       <header>
         <div className={styles.postAuthor}>
-          <Avatar src="https://github.com/jviniciusoliveira.png" />
+          <Avatar src={author.avatarUrl} />
           <div className={styles.postAuthorInfo}>
-            <strong>Jose Vinicius</strong>
-            <span>Web Developer</span>
+            <strong>{author.name}</strong>
+            <span>{author.role}</span>
           </div>
         </div>
 
-        <time title="20 de Janeiro às 8h" dateTime="2023-01-20 08:00:00">
-          Publicado há 1h
+        <time
+          title={publishedDateFormatted}
+          dateTime={publishedAt.toISOString()}
+        >
+          {publishedDateRelativeToNow}
         </time>
       </header>
 
       <div className={styles.postContent}>
-        <p>Fala galeraa 👋</p>
-        <p>
-          Acabei de subir mais um projeto no meu portifa. É um projeto que fiz
-          no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀
-        </p>
-        <p>
-          👉&nbsp;<a href="">jane.design/doctorcare</a>
-        </p>
+        {content.map((line, i) => {
+          const lineContent = contentTypes[line.type]
+          return lineContent(line.text, `${line.type}-${i}`)
+        })}
         <p>
           <a href="">#novoprojeto</a>&nbsp;
           <a href="">#nlw</a>&nbsp;
